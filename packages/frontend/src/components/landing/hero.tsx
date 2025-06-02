@@ -31,7 +31,7 @@ export const Hero: React.FC<HeroProps> = ({ onCreateClick }) => {
         </p>
 
         <button
-          className="group relative px-8 py-4 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl font-bold text-lg transition-all hover:scale-105 hover:shadow-xl shadow-purple-200"
+          className="group relative px-4 py-4 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl font-bold text-lg transition-all hover:scale-105 hover:shadow-xl shadow-purple-200 animate-bounceY"
           onClick={onCreateClick}
         >
           <span className="ml-3 opacity-70 group-hover:opacity-100 transition-opacity">
