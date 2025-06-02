@@ -24,19 +24,19 @@ export const Navbar: React.FC<NavbarProps> = ({ isConnected }) => {
                     <div className="hidden md:flex items-center space-x-8">
                         <Link
                             href="/explore"
-                            className="text-gray-600 hover:text-purple-600 transition-colors"
+                            className="text-white hover:text-purple-600 transition-colors"
                         >
                             Explore
                         </Link>
                         <Link
                             href="/about"
-                            className="text-gray-600 hover:text-purple-600 transition-colors"
+                            className="text-white hover:text-purple-600 transition-colors"
                         >
                             About
                         </Link>
                         <Link
                             href="/docs"
-                            className="text-gray-600 hover:text-purple-600 transition-colors"
+                            className="text-white hover:text-purple-600 transition-colors"
                         >
                             Docs
                         </Link>

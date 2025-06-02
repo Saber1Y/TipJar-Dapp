@@ -25,7 +25,7 @@ export const Hero: React.FC<HeroProps> = ({ onCreateClick }) => {
           </span>
         </h1>
 
-        <p className="text-xl md:text-2xl text-gray-700 max-w-3xl mx-auto leading-relaxed">
+        <p className="text-xl md:text-2xl text-white max-w-3xl mx-auto leading-relaxed">
           Empower your craft with a modern TipJar that makes receiving support
           simple, secure, and rewarding for both you and your supporters.
         </p>
