@@ -145,7 +145,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ ContractAddress, abi }) => {
     };
 
     return (
-        <div className="min-h-screen bg-white">
+        <div className="min-h-screen">
             <Navbar isConnected={isConnected} />
             {/* Hero Section */}
             <Hero onCreateClick={() => setIsOpen(true)} />
