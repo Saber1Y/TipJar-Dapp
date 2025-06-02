@@ -25,7 +25,7 @@ const FeatureCard: React.FC<FeatureCardProps> = ({
   <div
     className="relative p-0.5  md:max-w-[24rem]"
   >
-    <div className="relative z-2 flex flex-col min-h-[22rem] text-white p-10 pointer-events-none rounded-2xl shadow-lg">
+    <div className="relative z-2 flex flex-col min-h-[15rem] text-white p-10 pointer-events-none rounded-2xl shadow-lg">
       <h3 className="text-2xl font-bold text-white  mb-4">{title}</h3>
       <p className="leading-relaxed text-white mb-6">{description}</p>
       <div className="flex items-center mt-auto">

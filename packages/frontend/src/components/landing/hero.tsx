@@ -8,8 +8,11 @@ interface HeroProps {
 
 export const Hero: React.FC<HeroProps> = ({ onCreateClick }) => {
   return (
-    <section className="container mx-auto px-4 py-24 text-center">
-      <div className="max-w-4xl mx-auto space-y-12">
+    <section
+      className="container mx-auto px-4 py-24 text-center"
+      data-aos="zoom-in"
+    >
+      <div className="max-w-4xl mx-auto space-y-12" data-aos="zoom-in">
         <h1 className="text-5xl md:text-6xl font-bold text-white leading-tight">
           Turn Your Passion
           <br />
@@ -38,7 +41,6 @@ export const Hero: React.FC<HeroProps> = ({ onCreateClick }) => {
             Create TipJar
           </span>
         </button>
-
       </div>
     </section>
   );
