@@ -1,13 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { Dialog } from "@headlessui/react";
 import { X } from "lucide-react";
 import { Button } from "../shared/button";
-import { useRouter } from "next/navigation";
-
+import { toast } from "react-toastify";
 import TipjarFactory from "@/artifacts/TipjarFactory.json";
 import Contract from "@/artifacts/contract.json";
-
 import { useWriteContract } from "wagmi";
+import { usePublicClient } from "wagmi";
 
 interface PreviewModalProps {
   isOpen: boolean;
@@ -31,45 +30,72 @@ export const PreviewModal: React.FC<PreviewModalProps> = ({
   address,
   cid,
   onCreateClick,
-  isCreating,
+  // isCreating,
 }) => {
-  if (!previewData) return null;
-
+  const publicClient = usePublicClient();
+  const [isCreating, setIsCreating] = useState(false);
+  const [txStatus, setTxStatus] = useState<
+    "pending" | "success" | "error" | null
+  >(null);
   const abi = TipjarFactory.abi;
   const ContractAddress = Contract.address as `0x${string}`;
 
   const { writeContractAsync: createTipJar } = useWriteContract();
-  const router = useRouter();
+
+  if (!previewData) return null;
 
   const handleCreateTipjar = async () => {
     if (!cid || !previewData || !address) return;
+
+    setIsCreating(true);
+    setTxStatus("pending");
 
     try {
       const tx = await createTipJar({
         address: ContractAddress,
         abi: TipjarFactory.abi,
         functionName: "createTipJar",
-        args: [
-          previewData.name,
-          previewData.description,
-          cid,
-          previewData.slug,
-        ],
+        args: [cid, previewData.slug],
+      });
+
+      if (!publicClient) {
+        console.error("Public client is undefined");
+        setIsCreating(false);
+        setTxStatus("error");
+        return;
+      }
+
+      const receipt = await publicClient.waitForTransactionReceipt({
+        hash: tx,
+        confirmations: 1, // Wait for 1 confirmation
+        // timeout: 60_000, // 60 seconds timeout
       });
 
       console.log("Transaction submitted:", tx);
-      // maybe show a loading spinner here
+      if (receipt.status === "success") {
+        setTxStatus("success");
+        toast.success("TipJar created successfully!");
 
-      // optional: wait for confirmation
-      // await waitForTransaction({ hash: tx.hash });
-
-      // then redirect:
-      router.push(`/tipjar/${previewData.slug}`);
-    } catch (error) {
+        // Redirect to slug page
+        window.location.href = `/tipjar/${previewData.slug}`;
+      } else {
+        setTxStatus("error");
+        toast.error("Transaction failed");
+      }
+    } catch (error: any) {
+      setTxStatus("error");
       console.error("Error creating tip jar:", error);
-      // show error toast or message
+
+      if (error.message.includes("SlugAlreadyExists")) {
+        toast.error("This URL is already taken");
+      } else {
+        toast.error(`Creation failed: ${error.shortMessage || error.message}`);
+      }
+    } finally {
+      setIsCreating(false);
     }
   };
+
   return (
     <Dialog open={isOpen} onClose={onClose} className="relative z-50">
       <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
@@ -112,16 +138,23 @@ export const PreviewModal: React.FC<PreviewModalProps> = ({
                 <strong>IPFS CID:</strong> {cid}
               </div>
             )}
-
             <div className="flex justify-center pt-4">
-              <Button
-                onClick={handleCreateTipjar}
-                disabled={isCreating || !cid}
-                isLoading={isCreating}
-                fullWidth
-              >
-                {isCreating ? "Creating TipJar..." : "Create TipJar On-Chain"}
-              </Button>
+              {txStatus === "pending" ? (
+                <div className="flex flex-col items-center">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mb-2"></div>
+                  <p className="text-sm text-gray-500">
+                    Confirming transaction...
+                  </p>
+                </div>
+              ) : (
+                <Button
+                  onClick={handleCreateTipjar}
+                  disabled={isCreating}
+                  fullWidth
+                >
+                  {isCreating ? "Creating..." : "Create TipJar On-Chain"}
+                </Button>
+              )}
             </div>
           </div>
         </Dialog.Panel>
